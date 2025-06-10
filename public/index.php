@@ -12,6 +12,6 @@ $router = new Router();
 $router->register('GET', '/produtos', ['App\Controllers\ProdutoController', 'getAll']);
 $router->register('POST', '/produtos', ['App\Controllers\ProdutoController', 'create']);
 $router->register('PUT', '/produtos', ['App\Controllers\ProdutoController', 'update']);
-$router->register('DELETE', '/produtos/{id}', ['App\Controllers\ProdutoController', 'delete']);
+$router->register('DELETE', '/produto', ['App\Controllers\ProdutoController', 'delete']);
 
 $router->resolve(Request::method(), Request::path());

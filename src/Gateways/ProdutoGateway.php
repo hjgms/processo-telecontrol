@@ -23,7 +23,7 @@ class ProdutoGateway {
             throw new \Exception($e->getMessage());
         }
 
-        $result = $sth->fetch(\PDO::FETCH_ASSOC);
+        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
         
         return $result;
     }

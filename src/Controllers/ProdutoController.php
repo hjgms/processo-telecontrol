@@ -30,6 +30,7 @@ class ProdutoController {
         "sucess" => true,
         "error" => false,
         "massage" => "",
+        "size" => count($produtos),
         "produtos" => $produtos
       ]);
     } catch (Exception $e) {
