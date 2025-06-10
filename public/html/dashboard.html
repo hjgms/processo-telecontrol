@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Ordem de Serviço</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="sidebar d-flex flex-column">
+    <h4>OrdemServiço</h4>
+    <nav class="nav flex-column">
+      <a class="nav-link" href="#" onclick="showSection('clientes')">Clientes</a>
+      <a class="nav-link" href="#" onclick="showSection('produtos')">Produtos</a>
+      <a class="nav-link" href="#" onclick="showSection('ordem')">Ordem de Serviço</a>
+      <a class="nav-link text-danger mt-auto" href="#" onclick="logout()">Sair</a>
+    </nav>
+  </div>
+
+  <div class="content">
+    <!-- Clientes -->
+    <div id="clientes" class="section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Cadastro de Clientes</h3>
+        <button class="btn btn-primary">Adicionar Novo Cliente</button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr><th>Nome</th><th>CPF</th><th>Endereço</th></tr>
+        </thead>
+        <tbody id="clientes-list">
+          <!-- Dados dinâmicos -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Produtos -->
+    <div id="produtos" class="section" style="display:none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Cadastro de Produtos</h3>
+        <button class="btn btn-primary">Adicionar Novo Produto</button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr><th>Código</th><th>Descrição</th><th>Status</th><th>Garantia</th></tr>
+        </thead>
+        <tbody id="produtos-list">
+          <!-- Dados dinâmicos -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Ordem de Serviço -->
+    <div id="ordem" class="section" style="display:none">
+      <h3>Cadastro de Ordem de Serviço</h3>
+      <form>
+        <div class="mb-2">
+          <label for="buscaCliente" class="form-label">Buscar Cliente</label>
+          <input type="text" id="buscaCliente" class="form-control" placeholder="Digite o nome ou CPF...">
+        </div>
+        <div class="mb-2">
+          <label for="buscaProduto" class="form-label">Buscar Produto</label>
+          <input type="text" id="buscaProduto" class="form-control" placeholder="Digite o nome ou código...">
+        </div>
+        <button class="btn btn-success">Cadastrar Ordem</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
