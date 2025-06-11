@@ -14,4 +14,10 @@ class Validator
 
         return $fields;
     }
+
+    public static function validateId($id) {
+        if (!is_numeric($id) || $id <= 0) {
+            throw new \InvalidArgumentException("ID inválido");
+        }
+    }
 }

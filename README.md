@@ -1,69 +1,105 @@
 # Sistema de Ordem de Serviço
 
-Este projeto é uma aplicação web desenvolvida como parte de um teste técnico para a vaga de Programador Pleno. O sistema simula o fluxo de abertura de ordens de serviço, incluindo funcionalidades de autenticação, CRUD de clientes e produtos, e registro de logs.
+Este projeto é um sistema web desenvolvido para simular o fluxo de abertura de Ordens de Serviço, com funcionalidades de CRUD para Clientes e Produtos. Esta aplicação é parte de um teste prático para avaliação de um Programador Pleno.
 
-## 🧰 Tecnologias Utilizadas
+---
 
-- **Back-end:** PHP (Orientado a Objetos, API RESTful)
+## 🛠️ Tecnologias Utilizadas
+
+- **Back-end:** PHP (Programação Orientada a Objetos, API RESTful)
 - **Front-end:** HTML, JavaScript, jQuery, Bootstrap
-- **Banco de Dados:** PostgreSQL ou MySQL
+- **Banco de Dados:** PostgreSQL
 - **Controle de Versão:** Git
-- **Autenticação:** JWT (JSON Web Tokens)
-- **Documentação da API:** Swagger (ou equivalente)
 
-## 🚀 Como Executar o Projeto
+---
 
-### 1. Clone o Repositório
+## 🚀 Como Rodar a Aplicação
 
-```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
-```
+### 1. Configurar Variáveis de Ambiente
 
-### 2. Configure o Ambiente
-
-- Renomeie `.env.example` para `.env` e configure as variáveis de ambiente.
-- Instale as dependências necessárias via Composer:
-```bash
-composer install
-```
-
-### 3. Execute as Migrações
+Renomeie o arquivo `.env.exemple` para `.env`:
 
 ```bash
-php artisan migrate
+mv .env.example .env
 ```
 
-### 4. Inicie o Servidor Local
+### 2. Subir os Containers com Docker
+
+Certifique-se de ter o **Docker** e **Docker Compose** instalados. Depois, execute:
 
 ```bash
-php artisan serve
+docker-compose up -d
 ```
 
-### 5. Teste a Aplicação
+Esse comando iniciará os containers, incluindo o banco de dados PostgreSQL.
 
-- Acesse `http://localhost:8000` no navegador.
-- Utilize ferramentas como Postman para testar as rotas protegidas com JWT.
+### 3. Criar as Tabelas do Banco de Dados
+
+Após o banco estar em funcionamento, execute o script de migração para criar as tabelas necessárias:
+
+```bash
+php database/migrate.php
+```
+
+---
 
 ## 📦 Funcionalidades Implementadas
 
-- [ ] CRUD de Clientes com validação de CPF
-- [ ] CRUD de Produtos com filtros e buscas
-- [ ] CRUD de Ordem de Serviço
-- [ ] Cadastro automático de cliente na OS
-- [ ] Registro de logs de alterações
-- [ ] Autenticação com JWT e controle de acesso por função (admin, usuário)
-- [ ] Proteção contra SQL Injection e XSS
-- [ ] Testes unitários e de integração
-- [ ] Documentação da API
+Atualmente, o projeto contém as seguintes funcionalidades:
 
-## 🧪 Testes
+### ✅ Clientes
 
-Os testes estão localizados na pasta `/tests`. Para rodá-los, utilize:
+- CRUD completo (Criar, Ler, Atualizar, Deletar)
+- Validação de CPF (verifica se é válido e único)
 
-```bash
-phpunit
+### ✅ Produtos
+
+- CRUD completo (Criar, Ler, Atualizar, Deletar)
+- Filtros avançados por **status** e **tempo de garantia**
+
+> ⚠️ As funcionalidades de Ordem de Serviço, autenticação com JWT, e sistema de logs ainda não foram implementadas nesta versão.
+
+---
+
+## 📂 Estrutura de Pastas
+
 ```
+.
+├── database/
+│   └── migrate.php     # Script de criação das tabelas
+├── public/
+│   └── views/      # Tela de login / dashboard
+├── .env.exemple        # Exemplo do arquivo de variáveis de ambiente
+├── docker-compose.yml  # Container PostgreSQL
+└── README.md
+```
+
+---
+
+## 📌 Requisitos Futuramente Esperados
+
+Ainda pendentes para desenvolvimento:
+
+- Autenticação de usuários (JWT)
+- Controle de acesso (admin, usuário comum)
+- Finalizar o CRUD de Ordens de Serviço com auto-cadastro de cliente
+- Sistema de logs para alterações nas ordens
+- Testes unitários e de integração
+- Documentação da API com Swagger
+
+---
+
+## ✅ Entrega
+
+- Código versionado com Git
+- README com instruções claras de configuração e execução
+- Prazo de entrega: **3 dias**
+
+---
+
+## 🤝 Licença
+
+Este projeto é de uso exclusivo para avaliação técnica. Entre em contato com o autor em caso de dúvidas.
 
 ## 🧾 Diagrama do Banco de Dados
 
@@ -72,4 +108,4 @@ phpunit
 ## ✍️ Autor
 
 **Rafael Ribeiro**  
-Data: 9 de Junho de 2025
+Data: 11 de Junho de 2025

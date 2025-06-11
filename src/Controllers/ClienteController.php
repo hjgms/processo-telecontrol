@@ -2,36 +2,36 @@
 
 namespace App\Controllers;
 
-use App\Gateways\ProdutoGateway;
+use App\Gateways\ClienteGateway;
 use App\System\DatabaseConnector;
 use App\Core\Request;
 use App\Core\Response;
 use App\Utils\Validator;
 
-class ProdutoController {
+class ClienteController {
   private $db;
 
-  private $produtoGateway;
+  private $clienteGateway;
 
   public function __construct()
   {
     $dbConnector = new DatabaseConnector;
     $this->db = $dbConnector->getConnection();
 
-    $this->produtoGateway = new ProdutoGateway($this->db);
+    $this->clienteGateway = new ClienteGateway($this->db);
   }
 
   public function getAll(Request $request, Response $reponse)
   {
     try {
-      $produtos = $this->produtoGateway->findAll();
+      $cliente = $this->clienteGateway->findAll();
 
       $reponse::json([
         "sucess" => true,
         "error" => false,
         "massage" => "",
-        "size" => count($produtos),
-        "produtos" => $produtos
+        "size" => count($cliente),
+        "clientes" => $cliente
       ]);
     } catch (Exception $e) {
       $reponse::json([
@@ -43,49 +43,21 @@ class ProdutoController {
     }
   }
 
-  public function filter(Request $request, Response $response)
-  {
-    $params = $request->body(); // $_GET quando for GET
-
-    $status = $params['status'] ?? null;
-    $garantiaInicio = $params['garantiaInicio'] ?? null;
-    $garantiaFim = $params['garantiaFim'] ?? null;
-
-    try {
-      $produtos = $this->produtoGateway->filter($status, $garantiaInicio, $garantiaFim);
-
-      $response::json([
-        "sucess" => true,
-        "error" => false,
-        "massage" => "",
-        "size" => count($produtos),
-        "produtos" => $produtos
-      ]);
-    } catch (\Exception $e) {
-      $response::json([
-        "sucess" => false,
-        "error" => true,
-        "massage" => $e->getMessage()
-      ]);
-    }
-  }
-
-
   public function create(Request $request, Response $reponse)
   {
     $body = $request->body();
 
     try {
       Validator::validate([
-        'description' => $body['description'],
-        'status' => $body['status'],
-        'warranty_time' => $body['warranty_time'],
+        'name' => $body['name'],
+        'cpf' => $body['cpf'],
+        'address' => $body['address']
       ]);
 
-      $this->produtoGateway->insert([
-        'description' => $body['description'],
-        'status' => $body['status'],
-        'warranty_time' => $body['warranty_time'],
+      $this->clienteGateway->insert([
+        "name" => $body['name'],
+        "cpf" => $body['cpf'],
+        "address" => $body['address']
       ]);
 
       $reponse::json([
@@ -109,17 +81,17 @@ class ProdutoController {
     try {
       Validator::validate([
         'id' => $body['id'],
-        'description' => $body['description'],
-        'status' => $body['status'],
-        'warranty_time' => $body['warranty_time'],
+        'name' => $body['name'],
+        'cpf' => $body['cpf'],
+        'address' => $body['address']
       ]);
 
-      $this->produtoGateway->update(
-        $body['id'],
+      $this->clienteGateway->update(
+        $body['id'], 
         [
-          'description' => $body['description'],
-          'status' => $body['status'],
-          'warranty_time' => $body['warranty_time'],
+          'name' => $body['name'],
+          'cpf' => $body['cpf'],
+          'address' => $body['address']
         ]
       );
 
@@ -143,10 +115,10 @@ class ProdutoController {
 
     try {
       Validator::validate([
-        'id' => $body['id'],
+        'id' => $body['id']
       ]);
 
-      $this->produtoGateway->delete(
+      $this->clienteGateway->delete(
         $body['id']
       );
 

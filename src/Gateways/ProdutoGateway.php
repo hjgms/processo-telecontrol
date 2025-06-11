@@ -28,6 +28,32 @@ class ProdutoGateway {
         return $result;
     }
 
+    public function filter($status = null, $inicio = null, $fim = null)
+    {
+        $sql = "SELECT * FROM products WHERE 1=1";
+        $params = [];
+
+        if ($status !== null) {
+            $sql .= " AND status = :status";
+            $params[':status'] = $status;
+        }
+
+        if ($inicio !== null) {
+            $sql .= " AND warranty_time >= :inicio";
+            $params[':inicio'] = $inicio;
+        }
+
+        if ($fim !== null) {
+            $sql .= " AND warranty_time <= :fim";
+            $params[':fim'] = $fim;
+        }
+
+        $sth = $this->db->prepare($sql);
+        $sth->execute($params);
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function find($id)
     {
         $sth = $this->db->prepare(

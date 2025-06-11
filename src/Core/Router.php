@@ -49,7 +49,7 @@ class Router {
             $response = new Response();
             
             $controller = new $className();
-            return call_user_func_array([$controller, $method], [$request, $response]);
+            return call_user_func_array([$controller, $method], array_merge([$request, $response], $params));
         }
         
         return call_user_func_array($handler, $params);

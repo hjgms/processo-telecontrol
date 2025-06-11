@@ -2,36 +2,36 @@
 
 namespace App\Controllers;
 
-use App\Gateways\ProdutoGateway;
+use App\Gateways\OrdemServicoGateway;
 use App\System\DatabaseConnector;
 use App\Core\Request;
 use App\Core\Response;
 use App\Utils\Validator;
 
-class ProdutoController {
+class ClienteController {
   private $db;
 
-  private $produtoGateway;
+  private $ordemServicoGateway;
 
   public function __construct()
   {
     $dbConnector = new DatabaseConnector;
     $this->db = $dbConnector->getConnection();
 
-    $this->produtoGateway = new ProdutoGateway($this->db);
+    $this->ordemServicoGateway = new OrdemServicoGateway($this->db);
   }
 
   public function getAll(Request $request, Response $reponse)
   {
     try {
-      $produtos = $this->produtoGateway->findAll();
+      $cliente = $this->ordemServicoGateway->findAll();
 
       $reponse::json([
         "sucess" => true,
         "error" => false,
         "massage" => "",
-        "size" => count($produtos),
-        "produtos" => $produtos
+        "size" => count($cliente),
+        "clientes" => $cliente
       ]);
     } catch (Exception $e) {
       $reponse::json([
@@ -43,50 +43,16 @@ class ProdutoController {
     }
   }
 
-  public function filter(Request $request, Response $response)
-  {
-    $params = $request->body(); // $_GET quando for GET
-
-    $status = $params['status'] ?? null;
-    $garantiaInicio = $params['garantiaInicio'] ?? null;
-    $garantiaFim = $params['garantiaFim'] ?? null;
-
-    try {
-      $produtos = $this->produtoGateway->filter($status, $garantiaInicio, $garantiaFim);
-
-      $response::json([
-        "sucess" => true,
-        "error" => false,
-        "massage" => "",
-        "size" => count($produtos),
-        "produtos" => $produtos
-      ]);
-    } catch (\Exception $e) {
-      $response::json([
-        "sucess" => false,
-        "error" => true,
-        "massage" => $e->getMessage()
-      ]);
-    }
-  }
-
-
   public function create(Request $request, Response $reponse)
   {
     $body = $request->body();
 
     try {
       Validator::validate([
-        'description' => $body['description'],
-        'status' => $body['status'],
-        'warranty_time' => $body['warranty_time'],
+
       ]);
 
-      $this->produtoGateway->insert([
-        'description' => $body['description'],
-        'status' => $body['status'],
-        'warranty_time' => $body['warranty_time'],
-      ]);
+      $this->ordemServicoGateway->insert();
 
       $reponse::json([
         "sucess" => true,
@@ -108,20 +74,10 @@ class ProdutoController {
 
     try {
       Validator::validate([
-        'id' => $body['id'],
-        'description' => $body['description'],
-        'status' => $body['status'],
-        'warranty_time' => $body['warranty_time'],
+
       ]);
 
-      $this->produtoGateway->update(
-        $body['id'],
-        [
-          'description' => $body['description'],
-          'status' => $body['status'],
-          'warranty_time' => $body['warranty_time'],
-        ]
-      );
+      $this->ordemServicoGateway->update();
 
       $reponse::json([
         "sucess" => true,
@@ -143,12 +99,10 @@ class ProdutoController {
 
     try {
       Validator::validate([
-        'id' => $body['id'],
+
       ]);
 
-      $this->produtoGateway->delete(
-        $body['id']
-      );
+      $this->ordemServicoGateway->delete();
 
       $reponse::json([
         "sucess" => true,

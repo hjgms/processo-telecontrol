@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Ordem de Serviço</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+    }
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #343a40;
+      color: #fff;
+      padding-top: 20px;
+    }
+    .sidebar h4 {
+      padding-left: 1rem;
+    }
+    .sidebar .nav-link {
+      color: #fff;
+    }
+    .sidebar .nav-link:hover {
+      background-color: #495057;
+    }
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="sidebar d-flex flex-column">
+    <h4>OrdemServiço</h4>
+    <nav class="nav flex-column">
+      <a class="nav-link" href="#" onclick="showSection('clientes')">Clientes</a>
+      <a class="nav-link" href="#" onclick="showSection('produtos')">Produtos</a>
+      <a class="nav-link" href="#" onclick="showSection('ordem')">Ordem de Serviço</a>
+      <a class="nav-link text-danger mt-auto" href="#" onclick="logout()">Sair</a>
+    </nav>
+  </div>
+
+  <div class="content">
+
+    <!-- clientes -->
+    <div id="clientes" class="section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Cadastro de Clientes</h3>
+        <button class="btn btn-primary mt-3" onclick="openCreateClientModal()">Adicionar Novo Cliente</button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Endereço</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="clientes-list">
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- clientes modal -->
+    <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form onsubmit="submitClientForm(event)">
+            <div class="modal-header">
+              <h5 class="modal-title" id="clienteModalLabel">Novo Cliente</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="clienteId" />
+              <div class="mb-3">
+                <label for="nomeCliente" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nomeCliente">
+              </div>
+              <div class="mb-3">
+                <label for="cpfCliente" class="form-label">CPF</label>
+                <input type="text" class="form-control" id="cpfCliente">
+              </div>
+              <div class="mb-3">
+                <label for="enderecoCliente" class="form-label">Endereço</label>
+                <input type="text" class="form-control" id="enderecoCliente">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- produtos -->
+    <div id="produtos" class="section" style="display:none" onload="loadProdutos()">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Cadastro de Produtos</h3>
+        <div class="d-flex gap-4">
+          <button class="btn btn-secondary mt-3" onclick="openModal('filtroModal')">Filtrar Produtos</button>
+          <button class="btn btn-primary mt-3" onclick="openModal('produtoModal');">Adicionar Novo Produto</button>
+        </div>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Status</th>
+            <th>Garantia</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="produtos-list">
+          
+        </tbody>
+      </table>
+    </div>
+
+    <!-- produtos modal -->
+     <div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form onsubmit="submitProductForm(event)">
+            <div class="modal-header">
+              <h5 class="modal-title" id="produtoModalLabel">Novo Produto</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="productId" />
+              <div class="mb-3">
+                <label for="descricaoProduto" class="form-label">Descrição</label>
+                <input type="text" class="form-control" id="descricaoProduto">
+              </div>
+              <div class="mb-3">
+                <label for="statusProduto" class="form-label">Status</label>
+                <select class="form-select" id="statusProduto">
+                  <option value="active">Ativo</option>
+                  <option value="inactive">Inativo</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="garantiaProduto" class="form-label">Tempo de Garantia</label>
+                <input type="date" class="form-control" id="garantiaProduto">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Filtro -->
+    <div class="modal fade" id="filtroModal" tabindex="-1" aria-labelledby="filtroModalLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form onsubmit="filterProducts(event)">
+            <div class="modal-header">
+              <h5 class="modal-title" id="filtroModalLabel">Filtrar Produtos</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="filtroStatus" class="form-label">Status</label>
+                <select class="form-select" id="filtroStatus">
+                  <option value="">Todos</option>
+                  <option value="active">Ativo</option>
+                  <option value="inactive">Inativo</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="filtroInicio" class="form-label">Garantia a partir de</label>
+                <input type="date" class="form-control" id="filtroInicio">
+              </div>
+              <div class="mb-3">
+                <label for="filtroFim" class="form-label">Garantia até</label>
+                <input type="date" class="form-control" id="filtroFim">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Aplicar Filtro</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ordem de Serviço -->
+    <div id="ordem" class="section" style="display:none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Cadastro de Ordem de Serviço</h3>
+        <button class="btn btn-primary mt-3" onclick="openModal('ordemModal');">Cadastrar Nova Ordem</button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr><th>Código</th><th>Descrição</th><th>Status</th><th>Garantia</th></tr>
+        </thead>
+        <tbody id="produtos-list">
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ordem modal -->
+    <div class="modal fade" id="ordemModal" tabindex="-1" aria-labelledby="ordemModalLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form>
+            <div class="modal-header">
+              <h5 class="modal-title" id="ordemModalLabel">Nova Ordem de Serviço</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="numeroOrdem" class="form-label">Número da Ordem</label>
+                <input type="text" class="form-control" id="numeroOrdem">
+              </div>
+              <div class="mb-3">
+                <label for="dataAbertura" class="form-label">Data de Abertura</label>
+                <input type="date" class="form-control" id="dataAbertura">
+              </div>
+              <div class="mb-3">
+                <label for="nomeConsumidor" class="form-label">Nome do Consumidor</label>
+                <input type="text" class="form-control" id="nomeConsumidor">
+              </div>
+              <div class="mb-3">
+                <label for="cpfConsumidor" class="form-label">CPF do Consumidor</label>
+                <input type="text" class="form-control" id="cpfConsumidor">
+              </div>
+              <div class="mb-3">
+                <label for="produtoSelecionado" class="form-label">Produto</label>
+                <select class="form-select" id="produtoSelecionado">
+                  <!-- Opções carregadas dinamicamente -->
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Salvar Ordem</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    var selectedClientId = null;
+    var clientsList = [];
+    var productsList = [];
+
+    function openModal(modalId) {
+      const modal = new bootstrap.Modal(document.getElementById(modalId));
+      modal.show();
+    }
+
+    function closeModal(modalId) {
+      const modalElement = document.getElementById(modalId);
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+
+      const selected = document.getElementById(sectionId);
+      if (selected) {
+        selected.style.display = 'block';
+      }
+    }
+
+    function openCreateProductModal() {
+      $('#produtoModalLabel').text('Novo Produto');
+      $('#productId').val('');
+      $('#descricaoProduto').val('');
+      $('#statusProduto').val('');
+      $('#garantiaProduto').val('');
+      openModal('produtoModal');
+    }
+
+    function openEditProductModal(id) {
+      const product = productsList.find(c => c.id === id);
+      if (!product) return alert('Produto não encontrado.');
+
+      $('#produtoModalLabel').text('Editar Produto');
+      $('#productId').val(product.id);
+      $('#descricaoProduto').val(product.description);
+      $('#statusProduto').val(product.status);
+      $('#garantiaProduto').val(product.warranty_time);
+      openModal('produtoModal');
+    }
+
+    function deleteProduct(id) {
+      if (!confirm('Deseja remover este produto?')) return;
+
+      $.ajax({
+        url: 'http://127.0.0.1:8000/produto',
+        type: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify({ id }),
+        success: function() {
+          loadProducts();
+        },
+        error: function() {
+          alert('Erro ao remover produto');
+        }
+      });
+    }
+
+    function loadProducts() {
+      const select = $('#produtos-list');
+      
+      $.ajax({
+        url: 'http://127.0.0.1:8000/produtos',
+        type: 'GET',
+        success: function(response) {
+          select.empty();
+          productsList = [...response.produtos];
+          productsList.forEach(product => {
+            let [ano, mes, dia] = product.warranty_time.split('-');
+            let data = `${dia}/${mes}/${ano}`;
+            select.append(
+              `<tr>
+                <th>${product.id}</th>
+                <td>${product.description}</td>
+                <td>${product.status}</td>
+                <td>${data}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditProductModal(${product.id})">Editar</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${product.id})">Remover</button>
+                </td>
+              </tr>`
+            );
+          });
+        },
+        error: function() {
+          alert('Erro ao carregar produtos');
+        }
+      });
+      
+    }
+
+    function filterProducts(event) {
+      event.preventDefault();
+
+      const status = $('#filtroStatus').val();
+      const garantiaInicio = $('#filtroInicio').val();
+      const garantiaFim = $('#filtroFim').val();
+
+      let query = [];
+      if (status) query.push(`status=${status}`);
+      if (garantiaInicio) query.push(`garantiaInicio=${garantiaInicio}`);
+      if (garantiaFim) query.push(`garantiaFim=${garantiaFim}`);
+
+      const url = `http://127.0.0.1:8000/produtos/filtro?${query.join('&')}`;
+
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(response) {
+          const select = $('#produtos-list');
+          select.empty();
+          productsList = [...response.produtos];
+          productsList.forEach(product => {
+            let [ano, mes, dia] = product.warranty_time.split('-');
+            let data = `${dia}/${mes}/${ano}`;
+            select.append(
+              `<tr>
+                <th scope="row">${product.id}</th>
+                <td>${product.description}</td>
+                <td>${product.status}</td>
+                <td>${data}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditProductModal(${product.id})">Editar</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${product.id})">Remover</button>
+                </td>
+              </tr>`
+            );
+          });
+          closeModal('filtroModal');
+        },
+        error: function() {
+          alert('Erro ao aplicar filtro');
+        }
+      });
+    }
+
+    function submitProductForm(event) {
+      event.preventDefault();
+      const id = $('#productId').val();
+      const description = $('#descricaoProduto').val();
+      const status = $('#statusProduto').val();
+      const warranty_time = $('#garantiaProduto').val();
+
+      const data = JSON.stringify({
+        id: id,
+        description: description,
+        status: status,
+        warranty_time: warranty_time
+      });
+
+      if (id) {
+        // Editar produto
+        $.ajax({
+          url: 'http://127.0.0.1:8000/produtos',
+          type: 'PUT',
+          contentType: 'application/json',
+          data,
+          success: function() {
+            loadProducts();
+            closeModal('produtoModal');
+          },
+          error: function() {
+            alert('Erro ao editar produto');
+          }
+        });
+      } else {
+        // Criar produto
+        $.ajax({
+          url: 'http://127.0.0.1:8000/produtos',
+          type: 'POST',
+          contentType: 'application/json',
+          data,
+          success: function() {
+            loadProducts();
+            closeModal('produtoModal');
+          },
+          error: function() {
+            alert('Erro ao criar produto');
+          }
+        });
+      }
+    }
+
+
+    var clientsList = [];
+
+    function openModal(modalId) {
+      const modal = new bootstrap.Modal(document.getElementById(modalId));
+      modal.show();
+    }
+
+    function openCreateClientModal() {
+      $('#clienteModalLabel').text('Novo Cliente');
+      $('#clienteId').val('');
+      $('#nomeCliente').val('');
+      $('#cpfCliente').val('');
+      $('#enderecoCliente').val('');
+      openModal('clienteModal');
+    }
+
+    function openEditClientModal(id) {
+      const client = clientsList.find(c => c.id === id);
+      if (!client) return alert('Cliente não encontrado.');
+
+      $('#clienteModalLabel').text('Editar Cliente');
+      $('#clienteId').val(client.id);
+      $('#nomeCliente').val(client.name);
+      $('#cpfCliente').val(client.cpf);
+      $('#enderecoCliente').val(client.address);
+      openModal('clienteModal');
+    }
+
+    function submitClientForm(event) {
+      event.preventDefault();
+      const id = $('#clienteId').val();
+      const name = $('#nomeCliente').val();
+      const cpf = $('#cpfCliente').val();
+      const address = $('#enderecoCliente').val();
+
+      if (!validateCPF(cpf)) {
+        alert('CPF inválido');
+        return;
+      }
+
+      const data = JSON.stringify({ id: id, name: name, cpf: cpf, address: address });
+
+      if (id) {
+        // Editar cliente
+        $.ajax({
+          url: 'http://127.0.0.1:8000/clientes',
+          type: 'PUT',
+          contentType: 'application/json',
+          data,
+          success: function() {
+            loadClients();
+            closeModal('clienteModal');
+          },
+          error: function() {
+            alert('Erro ao editar cliente');
+          }
+        });
+      } else {
+        // Criar cliente
+        $.ajax({
+          url: 'http://127.0.0.1:8000/clientes',
+          type: 'POST',
+          contentType: 'application/json',
+          data,
+          success: function() {
+            loadClients();
+            closeModal('clienteModal');
+          },
+          error: function() {
+            alert('Erro ao criar cliente');
+          }
+        });
+      }
+    }
+
+    function loadClients() {
+      const table = $('#clientes-list');
+
+      $.ajax({
+        url: 'http://127.0.0.1:8000/clientes',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          clientsList = response.clientes;
+          table.empty();
+
+          clientsList.forEach(client => {
+            table.append(`
+              <tr>
+                <td>${client.id}</td>
+                <td>${client.name}</td>
+                <td>${client.cpf}</td>
+                <td>${client.address}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditClientModal(${client.id})">Editar</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteClient(${client.id})">Remover</button>
+                </td>
+              </tr>
+            `);
+          });
+        },
+        error: function() {
+          alert('Erro ao carregar os clientes');
+        }
+      });
+    }
+
+    function deleteClient(id) {
+      if (!confirm('Deseja remover este cliente?')) return;
+
+      $.ajax({
+        url: 'http://127.0.0.1:8000/cliente',
+        type: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify({ id }),
+        success: function() {
+          loadClients();
+        },
+        error: function() {
+          alert('Erro ao remover cliente');
+        }
+      });
+    }
+
+    function closeModal(modalId) {
+      const modalElement = document.getElementById(modalId);
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+
+    function validateCPF(cpf) {
+      cpf = cpf.replace(/[^\d]+/g, '');
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(10))) return false;
+
+      return true;
+    }
+
+    $(document).ready(function() {
+      loadClients();
+      loadProducts();
+    });
+
+  </script>
+</body>
+</html>
