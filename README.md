@@ -101,10 +101,6 @@ Ainda pendentes para desenvolvimento:
 
 Este projeto é de uso exclusivo para avaliação técnica. Entre em contato com o autor em caso de dúvidas.
 
-## 🧾 Diagrama do Banco de Dados
-
-![Diagrama do Banco de Dados](./docs/Diagrama.png)
-
 ## ✍️ Autor
 
 **Rafael Ribeiro**  
